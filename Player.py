@@ -13,20 +13,39 @@ class Player(pygame.sprite.Sprite):
         self._direction = None
         self._lives = 5
         self._score = 0
+        self._invincible = False
 
     @property
     def position(self):
         return self.rect.topleft 
     
+    # The reset method resets the player's position and speed to their original values.
     def reset(self):
-        # Reset the player's state
-        self.rect.center = (100, 100)  # Reset the player's position to the center of the screen
-        self._speed = 6  # Reset the player's speed to the initial speed
-    
+        self.rect.center = (100, 100)
+        self._speed = 6 
+
     @position.setter
     def position(self, value):
         self.rect.topleft = value
 
+    #use of pythons property operators to make the score a property instead of get set 
+    @property
+    def lives(self):
+        return self._lives
+
+    @lives.setter
+    def lives(self, value):
+        self._lives = value
+    
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, value):
+        self._score = value
+
+    #the handle_keypress method changes the player's direction based on the key pressed
     def handle_keypress(self, key):
         if key == pygame.K_UP:
             self._direction = 'UP'
@@ -41,20 +60,26 @@ class Player(pygame.sprite.Sprite):
             self._direction = 'RIGHT'
             self.image= pygame.transform.rotate(self.original_I, 0)
 
-    def update(self):
-        if self._direction == 'UP':
-            self.position = (self.position[0], self.position[1] - self._speed)
-        elif self._direction == 'DOWN':
-            self.position = (self.position[0], self.position[1] + self._speed)
-        elif self._direction == 'LEFT':
-            self.position = (self.position[0] - self._speed, self.position[1])
-        elif self._direction == 'RIGHT':
-            self.position = (self.position[0] + self._speed, self.position[1])
+    # the update method updates the player's position based on its current direction.
+    # Update verifies if player is not moving into a wall
+    def update(self, maze):
+        x,y = self.position
+        if self._direction == 'UP' and not maze.wall((x, y - self._speed)):
+            self.position = (x, y - self._speed)
+        elif self._direction == 'DOWN' and not maze.wall((x, y + self._speed + 10)):
+            self.position = (x, y + self._speed)
+        elif self._direction == 'LEFT'  and not maze.wall((x - self._speed , y)):
+            self.position = (x - self._speed, y)
+        elif self._direction == 'RIGHT' and not maze.wall((x + self._speed + 10 , y)):
+            self.position = (x + self._speed, y)
         pass
 
    
     def gain_life(self):
         self.lives += 1
+    
+    def lose_life(self):
+        self.lives -= 1
 
     def increase_speed(self):
         self._speed += 2  
@@ -62,6 +87,10 @@ class Player(pygame.sprite.Sprite):
     def eat_dot(self):
         self.score += 110  
         print(self.score)
-    
+        
+    def become_invincible(self):
+        self._invincible = True
+
+        
 
 
