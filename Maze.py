@@ -132,10 +132,10 @@ class Maze():
             self.layout = self.load_layout_3()
 
     # This is how i update the layout of the maze. I have this method because its called multiple times.
-    def update_maze_layout(self, grid_x, grid_y, value):
-        row = list(self.layout[grid_y])
-        row[grid_x] = value
-        self.layout[grid_y] = ''.join(row)
+    def update_maze_layout(self, x, y, value):
+        row = list(self.layout[y])
+        row[x] = value
+        self.layout[y] = ''.join(row)
     
     # Eaten_dot is called when the player eats a dot. It updates the layout of the maze.
     def eaten_dot(self, position,):
@@ -189,6 +189,7 @@ class Maze():
                     self.power_ups.append(inv_powerup)
                     screen.blit(inv_powerup.image, (pos_x, pos_y))
 
+                # doesnt work due to collision issues.. fix after powerups
                 # elif cell == 'l':
                 #     self.power_ups.append(Powerup('life', (x * self.wall_size, y * self.wall_size)))
                 # elif cell == 's':
