@@ -1,23 +1,20 @@
-import  pygame
-import os 
+
+import pygame
+import os
+from pygame.sprite import spritecollide
+
+# The Powerup class represents a power-up in pacman. This class is inherited by the other powerup classes.
 class Powerup:
-    def __init__(self,type,position):
-        self.type = type
+    def __init__(self, position):
         self.position = position
-        if type == 'life':
-            self.image = pygame.image.load(os.path.join('assets', 'life_power.png'))
-            self.image = pygame.transform.scale(self.image, (18, 18))
+        self.image = None
+        self.rect = None
 
-        elif type == 'speed':
-            self.image = pygame.image.load(os.path.join('assets', 'orange.png'))
-            self.image = pygame.transform.scale(self.image, (18, 18))
+    def handle_event(self, player, powerups):
+        collided_powerups = spritecollide(player, powerups, False)
+        for powerup in collided_powerups:
+            self.apply_effect(player)
+            powerups.remove(self)
 
-    def handle_event(self, player, maze):
-        player_x, player_y = player.position
-        powerup_x, powerup_y = self.position
-        if player_x == powerup_x and player_y == powerup_y:
-            if self.type == 'life':
-                player.gain_life()
-            elif self.type == 'speed':
-                player.increase_speed()
-            maze.eaten_dot((powerup_x, powerup_y))
+    def apply_effect(self, player):
+        pass
